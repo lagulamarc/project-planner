@@ -1,6 +1,7 @@
 package com.vlocity.exam.task;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
@@ -80,10 +81,8 @@ public class TaskService {
 					sortedSubtasks.get(i).getStartDate())) {
 				long subtaskDuration = Task.getTaskDuration(sortedSubtasks.get(i));
 				sortedSubtasks.get(i).setStartDate(sortedSubtasks.get(i - 1).getEndDate());
-				sortedSubtasks.get(i)
-						.setEndDate(java.sql.Date.valueOf(DateUtil.getEndDate(
-								new java.sql.Date(sortedSubtasks.get(i).getStartDate().getTime()).toLocalDate(),
-								subtaskDuration)));
+				sortedSubtasks.get(i).setEndDate(Date.from(getLocalEndDate(sortedSubtasks.get(i), subtaskDuration)
+						.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 			}
 		}
 	}
@@ -92,8 +91,12 @@ public class TaskService {
 		if (DateUtil.hasOverlapped(sortedSubtasks.get(sortedSubtasks.size() - 1).getEndDate(), task.getStartDate())) {
 			long taskDuration = Task.getTaskDuration(task);
 			task.setStartDate(sortedSubtasks.get(sortedSubtasks.size() - 1).getEndDate());
-			task.setEndDate(java.sql.Date.valueOf(
-					DateUtil.getEndDate(new java.sql.Date(task.getStartDate().getTime()).toLocalDate(), taskDuration)));
+			task.setEndDate(
+					Date.from(getLocalEndDate(task, taskDuration).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		}
+	}
+
+	private LocalDate getLocalEndDate(Task task, long duration) {
+		return DateUtil.getEndDate(new java.sql.Date(task.getStartDate().getTime()).toLocalDate(), duration);
 	}
 }
