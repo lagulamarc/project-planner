@@ -56,4 +56,22 @@ public class TaskServiceTest_GetEndDateTest {
 		// START: 2018-11-01 ; END: 2018-12-01 (General Task (after subtasks): 30 days)
 		Assert.assertEquals(generalTaskEndDate, generalTask.getEndDate());
 	}
+	
+
+
+	/**
+	 * Test get latest task end date, no subtasks
+	 */
+	@Test
+	public void testGetTaskEndDateNoSubtask() {
+		Task generalTask = new Task();
+		generalTask.setStartDate(parseDate("2018-11-01"));
+		generalTask.setEndDate(parseDate("2018-12-01"));
+
+		TaskService service = new TaskService();
+		Date generalTaskEndDate = service.getTaskEndDate(generalTask);
+
+		// General task start date should be earliest among subtasks start date
+		Assert.assertEquals(generalTaskEndDate, generalTask.getEndDate());
+	}
 }

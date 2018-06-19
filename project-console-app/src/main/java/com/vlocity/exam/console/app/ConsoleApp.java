@@ -15,13 +15,13 @@ import com.vlocity.exam.task.TaskService;
 
 public class ConsoleApp {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
 		ProjectService projectService = new ProjectService();
 		TaskService taskService = new TaskService();
 
 		Project project = populateProject();
 
-		System.out.println("Project created...");
+		System.out.println("\n\nPROJECT CREATED...\n\n");
 		System.out.println("Project Task Count: " + project.getTasks().size() + " tasks..");
 
 		List<Task> sortedTasks = project.getTasks().stream()
